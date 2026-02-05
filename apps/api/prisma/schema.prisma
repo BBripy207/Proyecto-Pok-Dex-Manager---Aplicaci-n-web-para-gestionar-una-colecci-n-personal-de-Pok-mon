@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id         Int              @id @default(autoincrement())
+  email      String           @unique
+  password   String
+  collection CollectionItem[]
+}
+
+model CollectionItem {
+  id        Int    @id @default(autoincrement())
+  pokemonId Int
+  name      String
+  spriteUrl String
+  note      String?
+  userId    Int
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
