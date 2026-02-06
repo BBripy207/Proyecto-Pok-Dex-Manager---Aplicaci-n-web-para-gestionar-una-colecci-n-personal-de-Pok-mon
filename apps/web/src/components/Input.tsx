@@ -9,16 +9,16 @@ export function Input({ label, error, className = '', ...props }: InputProps) {
     return (
         <div className="w-full">
             {label && (
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-bold text-gray-800 mb-2">
                     {label}
                 </label>
             )}
             <input
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pokemon-blue ${className}`}
+                className={`w-full px-4 py-3 border-2 border-pokemon-cream-dark bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-pokemon-orange focus:border-pokemon-orange transition-all ${className}`}
                 {...props}
             />
             {error && (
-                <p className="mt-1 text-sm text-red-600">{error}</p>
+                <p className="mt-2 text-sm text-red-600 font-medium">{error}</p>
             )}
         </div>
     );

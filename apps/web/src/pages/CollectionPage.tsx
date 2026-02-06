@@ -38,7 +38,7 @@ export function CollectionPage() {
     if (loading) {
         return (
             <Container>
-                <div className="text-center py-20">Loading...</div>
+                <div className="text-center py-20 text-white text-xl">Loading...</div>
             </Container>
         );
     }
@@ -46,9 +46,9 @@ export function CollectionPage() {
     if (collection.length === 0) {
         return (
             <Container>
-                <h1 className="text-4xl font-bold mb-8">My Collection</h1>
+                <h1 className="text-4xl font-bold mb-8 text-white">My Collection</h1>
                 <Card className="text-center py-12">
-                    <p className="text-gray-600 mb-4">Your collection is empty</p>
+                    <p className="text-gray-700 mb-4 text-lg">Your collection is empty</p>
                     <Link to="/pokemon">
                         <Button>Browse Pokemon</Button>
                     </Link>
@@ -59,25 +59,27 @@ export function CollectionPage() {
 
     return (
         <Container>
-            <h1 className="text-4xl font-bold mb-8">
+            <h1 className="text-4xl font-bold mb-8 text-white">
                 My Collection ({collection.length})
             </h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {collection.map((item) => (
                     <Card key={item.id}>
-                        <Link to={`/pokemon/${item.pokemonId}`}>
-                            <img
-                                src={item.spriteUrl}
-                                alt={item.name}
-                                className="w-full h-48 object-contain cursor-pointer"
-                            />
-                        </Link>
+                        <div className="bg-white rounded-lg p-4 mb-3 border border-gray-200">
+                            <Link to={`/pokemon/${item.pokemonId}`}>
+                                <img
+                                    src={item.spriteUrl}
+                                    alt={item.name}
+                                    className="w-full h-40 object-contain cursor-pointer hover:scale-110 transition-transform duration-300"
+                                />
+                            </Link>
+                        </div>
                         <div className="mt-4">
-                            <p className="text-sm text-gray-500">#{item.pokemonId}</p>
-                            <h3 className="text-lg font-semibold capitalize">{item.name}</h3>
+                            <p className="text-xs font-bold text-pokemon-orange bg-pokemon-orange/10 inline-block px-2 py-1 rounded">#{String(item.pokemonId).padStart(3, '0')}</p>
+                            <h3 className="text-lg font-bold capitalize mt-2 text-gray-800">{item.name}</h3>
                             {item.note && (
-                                <p className="text-sm text-gray-600 mt-2">{item.note}</p>
+                                <p className="text-sm text-gray-700 mt-2 italic bg-gray-100 p-2 rounded">{item.note}</p>
                             )}
                             <Button
                                 variant="danger"

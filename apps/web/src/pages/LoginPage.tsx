@@ -33,7 +33,7 @@ export function LoginPage() {
     return (
         <Container className="flex justify-center items-center min-h-[80vh]">
             <Card className="w-full max-w-md">
-                <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
+                <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Login</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <Input

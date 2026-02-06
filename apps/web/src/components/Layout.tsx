@@ -7,7 +7,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-pokemon-navy via-pokemon-navy-dark to-blue-950">
             <Navbar />
             <main className="py-8">
                 {children}

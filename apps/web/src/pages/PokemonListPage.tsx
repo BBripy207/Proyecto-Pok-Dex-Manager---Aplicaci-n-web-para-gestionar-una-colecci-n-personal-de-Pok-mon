@@ -45,14 +45,14 @@ export function PokemonListPage() {
     if (loading) {
         return (
             <Container>
-                <div className="text-center py-20">Loading...</div>
+                <div className="text-center py-20 text-white text-xl">Loading...</div>
             </Container>
         );
     }
 
     return (
         <Container>
-            <h1 className="text-4xl font-bold mb-8">Pokemon</h1>
+            <h1 className="text-4xl font-bold mb-8 text-white">Pokémon</h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {pokemon.map((p) => {
