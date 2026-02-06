@@ -86,7 +86,7 @@ export function PokemonDetailPage() {
                         <img
                             src={pokemon.sprites.other['official-artwork'].front_default}
                             alt={pokemon.name}
-                            className="w-full hover:scale-110 transition-transform duration-300"
+                            className="w-full hover:scale-105 transition-transform duration-300"
                         />
                     </div>
                 </Card>

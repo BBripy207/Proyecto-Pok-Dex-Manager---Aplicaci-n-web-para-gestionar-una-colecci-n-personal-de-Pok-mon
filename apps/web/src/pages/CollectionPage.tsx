@@ -71,7 +71,7 @@ export function CollectionPage() {
                                 <img
                                     src={item.spriteUrl}
                                     alt={item.name}
-                                    className="w-full h-40 object-contain cursor-pointer hover:scale-110 transition-transform duration-300"
+                                    className="w-full h-40 object-contain cursor-pointer hover:scale-105 transition-transform duration-300"
                                 />
                             </Link>
                         </div>

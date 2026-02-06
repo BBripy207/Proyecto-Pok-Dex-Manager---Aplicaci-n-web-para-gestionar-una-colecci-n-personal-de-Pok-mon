@@ -10,12 +10,12 @@ interface PokemonCardProps {
 export function PokemonCard({ id, name, imageUrl }: PokemonCardProps) {
     return (
         <Link to={`/pokemon/${id}`}>
-            <Card className="hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+            <Card className="hover:shadow-2xl transition-all duration-300 cursor-pointer group">
                 <div className="bg-white rounded-lg p-4 mb-3 border border-gray-200">
                     <img
                         src={imageUrl}
                         alt={name}
-                        className="w-full h-40 object-contain group-hover:scale-110 transition-transform duration-300"
+                        className="w-full h-40 object-contain group-hover:scale-105 transition-transform duration-300"
                     />
                 </div>
                 <div className="mt-3">
