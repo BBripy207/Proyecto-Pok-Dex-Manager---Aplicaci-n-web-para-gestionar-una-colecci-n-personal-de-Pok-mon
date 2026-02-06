@@ -45,7 +45,7 @@ export function Navbar() {
                     <div className="flex items-center gap-6">
                         {user ? (
                             <>
-                                <Link to="/pokemon" className="hover:text-pokemon-yellow transition-colors font-medium">
+                                <Link to="/" className="hover:text-pokemon-yellow transition-colors font-medium">
                                     Pokémon
                                 </Link>
                                 <Link to="/collection" className="hover:text-pokemon-yellow transition-colors font-medium">

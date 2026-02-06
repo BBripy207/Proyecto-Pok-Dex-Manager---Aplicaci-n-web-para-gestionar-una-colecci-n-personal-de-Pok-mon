@@ -4,6 +4,7 @@ import { PokemonCard } from '../components/PokemonCard';
 import { Button } from '../components/Button';
 import { pokemonService } from '../services/pokemonService';
 import type { PokemonListItem } from '../types';
+import pokeball from '../assets/Poké_Ball_icon.svg.png';
 
 export function PokemonListPage() {
     const [pokemon, setPokemon] = useState<PokemonListItem[]>([]);
@@ -45,16 +46,25 @@ export function PokemonListPage() {
     if (loading) {
         return (
             <Container>
-                <div className="text-center py-20 text-white text-xl">Loading...</div>
+                <div className="text-center py-10 text-white text-xl">Loading...</div>
             </Container>
         );
     }
 
     return (
         <Container>
-            <h1 className="text-4xl font-bold mb-8 text-white">Pokémon</h1>
+            <div className="text-center py-6 mb-4">
+                <div className="flex items-center justify-center gap-4 mb-4">
+                    <img src={pokeball} alt="Pokeball" className="w-16 h-16 animate-spin-slow" />
+                    <h1 className="text-6xl font-extrabold text-white drop-shadow-lg">
+                        <span className="text-pokemon-yellow">Poké</span><span className="text-pokemon-red">Dex</span> <span className="text-white">Manager</span>
+                    </h1>
+                    <img src={pokeball} alt="Pokeball" className="w-16 h-16 animate-spin-slow" />
+                </div>
+                
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {pokemon.map((p) => {
                     const id = extractIdFromUrl(p.url);
                     return (
@@ -68,7 +78,7 @@ export function PokemonListPage() {
                 })}
             </div>
 
-            <div className="flex justify-center gap-4 mt-8">
+            <div className="flex justify-center gap-4 mt-6">
                 <Button onClick={handlePrevious} disabled={offset === 0}>
                     Previous
                 </Button>

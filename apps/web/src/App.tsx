@@ -15,25 +15,10 @@ export function App() {
       <AuthProvider>
         <Layout>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<PokemonListPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route
-              path="/pokemon"
-              element={
-                <ProtectedRoute>
-                  <PokemonListPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/pokemon/:id"
-              element={
-                <ProtectedRoute>
-                  <PokemonDetailPage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/pokemon/:id" element={<PokemonDetailPage />} />
             <Route
               path="/collection"
               element={

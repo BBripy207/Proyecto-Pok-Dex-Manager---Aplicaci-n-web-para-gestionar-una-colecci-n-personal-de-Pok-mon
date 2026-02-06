@@ -9,22 +9,20 @@ export function HomePage() {
 
     return (
         <Container>
-            <div className="text-center py-20">
-                <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="text-center py-10">
+                <div className="flex items-center justify-center gap-4 mb-4">
                     <img src={pokeball} alt="Pokeball" className="w-16 h-16 animate-spin-slow" />
                     <h1 className="text-6xl font-extrabold text-white drop-shadow-lg">
                         <span className="text-pokemon-yellow">Poké</span><span className="text-pokemon-red">Dex</span> <span className="text-white">Manager</span>
                     </h1>
                     <img src={pokeball} alt="Pokeball" className="w-16 h-16 animate-spin-slow" />
                 </div>
-                <p className="text-2xl text-pokemon-cream mb-12 font-medium">
-                    Manage your personal Pokémon collection with style
-                </p>
+                
 
                 <div className="flex justify-center gap-4">
                     {user ? (
                         <>
-                            <Link to="/pokemon">
+                            <Link to="/">
                                 <Button>Browse Pokemon</Button>
                             </Link>
                             <Link to="/collection">

@@ -7,16 +7,23 @@ import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { pokemonService } from '../services/pokemonService';
 import { collectionService } from '../services/collectionService';
+import { useAuth } from '../hooks/useAuth';
 import type { Pokemon } from '../types';
 
 export function PokemonDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { user, login, register } = useAuth();
     const [pokemon, setPokemon] = useState<Pokemon | null>(null);
     const [loading, setLoading] = useState(true);
     const [note, setNote] = useState('');
     const [adding, setAdding] = useState(false);
     const [message, setMessage] = useState('');
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [isLogin, setIsLogin] = useState(true);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [authError, setAuthError] = useState('');
 
     useEffect(() => {
         loadPokemon();
@@ -39,6 +46,11 @@ export function PokemonDetailPage() {
         e.preventDefault();
         if (!pokemon) return;
 
+        if (!user) {
+            setShowAuthModal(true);
+            return;
+        }
+
         setAdding(true);
         setMessage('');
 
@@ -58,10 +70,28 @@ export function PokemonDetailPage() {
         }
     }
 
+    async function handleAuth(e: FormEvent) {
+        e.preventDefault();
+        setAuthError('');
+
+        try {
+            if (isLogin) {
+                await login(email, password);
+            } else {
+                await register(email, password);
+            }
+            setShowAuthModal(false);
+            setEmail('');
+            setPassword('');
+        } catch (error) {
+            setAuthError(error instanceof Error ? error.message : 'Authentication failed');
+        }
+    }
+
     if (loading) {
         return (
             <Container>
-                <div className="text-center py-20 text-white text-xl">Loading...</div>
+                <div className="text-center py-10 text-white text-xl">Loading...</div>
             </Container>
         );
     }
@@ -69,18 +99,18 @@ export function PokemonDetailPage() {
     if (!pokemon) {
         return (
             <Container>
-                <div className="text-center py-20 text-white text-xl">Pokemon not found</div>
+                <div className="text-center py-10 text-white text-xl">Pokemon not found</div>
             </Container>
         );
     }
 
     return (
         <Container>
-            <Button onClick={() => navigate('/pokemon')} className="mb-6">
+            <Button onClick={() => navigate('/')} className="mb-6">
                 Back to List
             </Button>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-6">
                 <Card className="flex items-center justify-center">
                     <div className="bg-white rounded-lg p-6 w-full">
                         <img
@@ -91,7 +121,7 @@ export function PokemonDetailPage() {
                     </div>
                 </Card>
 
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <div>
                         <p className="text-pokemon-orange font-bold text-lg">#{String(pokemon.id).padStart(3, '0')}</p>
                         <h1 className="text-4xl font-bold capitalize text-white">{pokemon.name}</h1>
@@ -140,6 +170,45 @@ export function PokemonDetailPage() {
                     </Card>
                 </div>
             </div>
+
+            {showAuthModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowAuthModal(false)}>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <Card className="w-full max-w-md">
+                            <h2 className="text-2xl font-bold mb-4 text-gray-800">
+                                {isLogin ? 'Login to Add Pokemon' : 'Create Account'}
+                            </h2>
+                            <form onSubmit={handleAuth} className="space-y-4">
+                                <Input
+                                    type="email"
+                                    label="Email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                                <Input
+                                    type="password"
+                                    label="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                {authError && <p className="text-sm text-red-600">{authError}</p>}
+                                <Button type="submit" fullWidth>
+                                    {isLogin ? 'Login' : 'Register'}
+                                </Button>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsLogin(!isLogin)}
+                                    className="w-full text-center text-sm text-gray-600 hover:text-gray-800"
+                                >
+                                    {isLogin ? "Don't have an account? Register" : 'Already have an account? Login'}
+                                </button>
+                            </form>
+                        </Card>
+                    </div>
+                </div>
+            )}
         </Container>
     );
 }

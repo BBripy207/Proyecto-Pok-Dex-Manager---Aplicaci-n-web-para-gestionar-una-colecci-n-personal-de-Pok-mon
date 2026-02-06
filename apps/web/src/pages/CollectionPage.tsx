@@ -38,7 +38,7 @@ export function CollectionPage() {
     if (loading) {
         return (
             <Container>
-                <div className="text-center py-20 text-white text-xl">Loading...</div>
+                <div className="text-center py-10 text-white text-xl">Loading...</div>
             </Container>
         );
     }
@@ -46,10 +46,10 @@ export function CollectionPage() {
     if (collection.length === 0) {
         return (
             <Container>
-                <h1 className="text-4xl font-bold mb-8 text-white">My Collection</h1>
-                <Card className="text-center py-12">
+                <h1 className="text-4xl font-bold mb-4 text-white">My Collection</h1>
+                <Card className="text-center py-8">
                     <p className="text-gray-700 mb-4 text-lg">Your collection is empty</p>
-                    <Link to="/pokemon">
+                    <Link to="/">
                         <Button>Browse Pokemon</Button>
                     </Link>
                 </Card>
@@ -59,11 +59,11 @@ export function CollectionPage() {
 
     return (
         <Container>
-            <h1 className="text-4xl font-bold mb-8 text-white">
+            <h1 className="text-4xl font-bold mb-4 text-white">
                 My Collection ({collection.length})
             </h1>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {collection.map((item) => (
                     <Card key={item.id}>
                         <div className="bg-white rounded-lg p-4 mb-3 border border-gray-200">
