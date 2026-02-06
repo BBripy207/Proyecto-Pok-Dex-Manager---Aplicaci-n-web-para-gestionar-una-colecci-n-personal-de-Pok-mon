@@ -52,7 +52,7 @@ export function Navbar() {
                                     My Collection
                                 </Link>
                                 <div ref={menuRef} className="relative">
-                                    <button 
+                                    <button
                                         onClick={() => setShowMenu(!showMenu)}
                                         className="bg-pokemon-orange hover:bg-orange-600 px-4 py-2 rounded-lg font-bold border-2 border-orange-700 transition-all duration-200"
                                     >
