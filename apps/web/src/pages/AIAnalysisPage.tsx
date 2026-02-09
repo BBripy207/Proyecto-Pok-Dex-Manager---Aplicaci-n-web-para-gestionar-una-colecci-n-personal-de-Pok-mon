@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Loader2, AlertCircle, Compass } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { Container } from '../components/Container';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -92,9 +92,8 @@ export function AIAnalysisPage() {
     return (
         <Container>
             <div className="max-w-6xl mx-auto py-8 px-4">
-                <div className="flex items-center gap-3 mb-8">
-                    <Compass className="w-8 h-8 text-pokemon-red" />
-                    <h1 className="text-3xl font-bold text-gray-900">Team Builder</h1>
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-white">Team Builder</h1>
                 </div>
 
                 <Card>
@@ -119,8 +118,7 @@ export function AIAnalysisPage() {
                                 </>
                             ) : (
                                 <>
-                                    <Compass className="w-4 h-4 mr-2" />
-                                    Ver Recomendaciones
+                                    ¡Arma tu equipo!
                                 </>
                             )}
                         </Button>
@@ -135,10 +133,7 @@ export function AIAnalysisPage() {
                         {recommendations && (
                             <>
                                 <div className="mt-6 p-6 bg-gradient-to-br from-pokemon-cream to-pokemon-cream-dark/30 border-2 border-pokemon-orange rounded-lg">
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <svg className="w-6 h-6 text-pokemon-red" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                                        </svg>
+                                    <div className="mb-4">
                                         <h3 className="text-lg font-semibold text-gray-900">
                                             Sugerencias para tu Equipo
                                         </h3>

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Compass } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { Container } from './Container';
 import { Button } from './Button';
@@ -98,7 +97,9 @@ export function Navbar() {
                                 onClick={() => setShowMobileMenu(false)}
                                 className="flex items-center gap-3 px-6 py-4 hover:bg-pokemon-orange/20 transition-colors font-medium"
                             >
-                                <Compass className="w-5 h-5" />
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                                </svg>
                                 Team Builder
                             </Link>
                         </>
@@ -141,7 +142,9 @@ export function Navbar() {
                                     My Collection
                                 </Link>
                                 <Link to="/ai-analysis" className="hover:text-pokemon-yellow transition-colors font-medium flex items-center gap-2">
-                                    <Compass className="w-4 h-4" />
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                                    </svg>
                                     Team Builder
                                 </Link>
                             </div>
@@ -184,7 +187,9 @@ export function Navbar() {
                                                 onClick={() => setShowMenu(false)}
                                                 className="flex items-center gap-2 px-4 py-3 text-gray-800 hover:bg-pokemon-orange hover:text-white transition-colors font-medium"
                                             >
-                                                <Compass className="w-4 h-4" />
+                                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                                                </svg>
                                                 Team Builder
                                             </Link>
                                             <button
