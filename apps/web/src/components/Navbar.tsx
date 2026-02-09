@@ -40,18 +40,17 @@ export function Navbar() {
         <>
             {/* Overlay oscuro */}
             {showMobileMenu && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
                     onClick={() => setShowMobileMenu(false)}
                 />
             )}
 
             {/* Menú lateral deslizante */}
-            <div 
+            <div
                 ref={mobileMenuRef}
-                className={`fixed top-0 left-0 h-full w-64 bg-pokemon-navy-dark text-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
-                    showMobileMenu ? 'translate-x-0' : '-translate-x-full'
-                }`}
+                className={`fixed top-0 left-0 h-full w-64 bg-pokemon-navy-dark text-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${showMobileMenu ? 'translate-x-0' : '-translate-x-full'
+                    }`}
             >
                 <div className="flex items-center justify-between p-4 border-b border-pokemon-orange/30">
                     <div className="flex items-center gap-2">
@@ -60,7 +59,7 @@ export function Navbar() {
                             <span className="text-pokemon-yellow">Poké</span><span className="text-pokemon-red">Dex</span>
                         </span>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setShowMobileMenu(false)}
                         className="text-white hover:text-pokemon-yellow"
                     >
@@ -70,8 +69,8 @@ export function Navbar() {
                     </button>
                 </div>
                 <div className="py-4">
-                    <Link 
-                        to="/" 
+                    <Link
+                        to="/"
                         onClick={() => setShowMobileMenu(false)}
                         className="flex items-center gap-3 px-6 py-4 hover:bg-pokemon-orange/20 transition-colors font-medium"
                     >
@@ -81,7 +80,7 @@ export function Navbar() {
                         Pokémon
                     </Link>
                     {user && (
-                        <Link 
+                        <Link
                             to="/collection"
                             onClick={() => setShowMobileMenu(false)}
                             className="flex items-center gap-3 px-6 py-4 hover:bg-pokemon-orange/20 transition-colors font-medium"
@@ -94,7 +93,7 @@ export function Navbar() {
                         </Link>
                     )}
                     {!user && (
-                        <Link 
+                        <Link
                             to="/register"
                             onClick={() => setShowMobileMenu(false)}
                             className="flex items-center gap-3 px-6 py-4 hover:bg-pokemon-orange/20 transition-colors font-medium"
