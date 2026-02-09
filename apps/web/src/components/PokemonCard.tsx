@@ -11,13 +11,14 @@ interface PokemonCardProps {
     id: number;
     name: string;
     imageUrl: string;
+    isInCollection?: boolean;
+    onAdded?: () => void;
 }
 
-export function PokemonCard({ id, name, imageUrl }: PokemonCardProps) {
+export function PokemonCard({ id, name, imageUrl, isInCollection = false, onAdded }: PokemonCardProps) {
     const navigate = useNavigate();
     const { user, login, register } = useAuth();
     const [adding, setAdding] = useState(false);
-    const [message, setMessage] = useState('');
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
@@ -37,15 +38,12 @@ export function PokemonCard({ id, name, imageUrl }: PokemonCardProps) {
         }
 
         setAdding(true);
-        setMessage('');
 
         try {
             await collectionService.addPokemon(id, name, imageUrl, undefined);
-            setMessage('Added!');
-            setTimeout(() => setMessage(''), 2000);
+            if (onAdded) onAdded();
         } catch (error) {
-            setMessage(error instanceof Error ? error.message : 'Failed');
-            setTimeout(() => setMessage(''), 2000);
+            console.error('Failed to add:', error);
         } finally {
             setAdding(false);
         }
@@ -91,18 +89,12 @@ export function PokemonCard({ id, name, imageUrl }: PokemonCardProps) {
                     
                     <Button
                         onClick={handleAddToCollection}
-                        disabled={adding}
+                        disabled={adding || isInCollection}
                         className="mt-3 w-full text-sm"
                         variant="secondary"
                     >
-                        {adding ? 'Adding...' : 'Add to Collection'}
+                        {isInCollection ? 'Added' : adding ? 'Adding...' : 'Add to Collection'}
                     </Button>
-                    
-                    {message && (
-                        <p className={`text-xs mt-2 text-center ${message.includes('Failed') ? 'text-red-600' : 'text-green-600'}`}>
-                            {message}
-                        </p>
-                    )}
                 </Card>
             </div>
 

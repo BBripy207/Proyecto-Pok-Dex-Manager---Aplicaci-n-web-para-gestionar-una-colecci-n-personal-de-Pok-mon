@@ -3,6 +3,8 @@ import { Container } from '../components/Container';
 import { PokemonCard } from '../components/PokemonCard';
 import { Button } from '../components/Button';
 import { pokemonService } from '../services/pokemonService';
+import { collectionService } from '../services/collectionService';
+import { useAuth } from '../hooks/useAuth';
 import type { PokemonListItem } from '../types';
 import pokeball from '../assets/Poké_Ball_icon.svg.png';
 
@@ -11,11 +13,17 @@ export function PokemonListPage() {
     const [loading, setLoading] = useState(true);
     const [offset, setOffset] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
+    const [message, setMessage] = useState('');
+    const [collectionIds, setCollectionIds] = useState<Set<number>>(new Set());
+    const { user } = useAuth();
     const limit = 20;
 
     useEffect(() => {
         loadPokemon();
-    }, [offset]);
+        if (user) {
+            loadCollection();
+        }
+    }, [offset, user]);
 
     async function loadPokemon() {
         setLoading(true);
@@ -27,6 +35,26 @@ export function PokemonListPage() {
         } finally {
             setLoading(false);
         }
+    }
+
+    async function loadCollection() {
+        try {
+            const collection = await collectionService.getCollection();
+            const ids = new Set(collection.map(item => item.pokemonId));
+            setCollectionIds(ids);
+        } catch (error) {
+            console.error('Failed to load collection');
+        }
+    }
+
+    function showMessage(msg: string) {
+        setMessage(msg);
+        setTimeout(() => setMessage(''), 3000);
+    }
+
+    function onPokemonAdded(pokemonId: number) {
+        setCollectionIds(prev => new Set([...prev, pokemonId]));
+        showMessage('✓ Added to collection!');
     }
 
     function handlePrevious() {
@@ -58,6 +86,12 @@ export function PokemonListPage() {
 
     return (
         <Container>
+            {message && (
+                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+                    {message}
+                </div>
+            )}
+            
             <div className="text-center py-6 mb-4">
                 <div className="flex items-center justify-center gap-4 mb-4">
                     <img src={pokeball} alt="Pokeball" className="w-16 h-16 animate-spin-slow" />
@@ -92,6 +126,8 @@ export function PokemonListPage() {
                                 id={id}
                                 name={p.name}
                                 imageUrl={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+                                isInCollection={collectionIds.has(id)}
+                                onAdded={() => onPokemonAdded(id)}
                             />
                         );
                     })}
