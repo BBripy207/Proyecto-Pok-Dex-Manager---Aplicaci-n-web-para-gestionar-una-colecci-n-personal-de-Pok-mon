@@ -14,6 +14,7 @@ El proyecto utiliza una arquitectura monorepo con dos aplicaciones independiente
 - Autenticación: JWT con cookies HttpOnly
 - Validación: Zod 4.3.6
 - Encriptación: bcryptjs 3.0.3
+- IA: OpenAI SDK 6.18.0 (GPT-3.5-turbo-16k para recomendaciones)
 
 ### Frontend
 - Framework: React 19.2.0
@@ -100,6 +101,18 @@ DELETE /api/collection/:id
 - Requiere: Cookie de autenticación
 - Retorna: Confirmación de eliminación
 
+### Team Builder (IA)
+GET /api/ai/recommendations
+- Requiere: Cookie de autenticación
+- Retorna: Recomendaciones personalizadas de 4 Pokémon basadas en la colección actual
+- Usa OpenAI GPT-3.5-turbo-16k para análisis estratégico
+- Incluye explicaciones de sinergia con los Pokémon que ya tienes
+
+GET /api/ai/test-public
+- No requiere autenticación
+- Endpoint de prueba para verificar conexión con OpenAI
+- Retorna: Confirmación de eliminación
+
 ## Rutas Frontend
 
 ### Públicas
@@ -110,6 +123,7 @@ DELETE /api/collection/:id
 
 ### Protegidas
 - /collection : Colección personal del usuario autenticado
+- /ai-analysis : Team Builder con recomendaciones de IA para complementar tu equipo
 
 ## Componentes Principales
 
@@ -117,7 +131,7 @@ DELETE /api/collection/:id
 Contenedor global con gradiente de fondo navy y navbar persistente en todas las páginas.
 
 ### Navbar
-Barra de navegación superior con logo de Pokéball, enlaces principales y menú desplegable de usuario cuando está autenticado. Muestra email del usuario y opción de logout.
+Barra de navegación superior con logo de Pokéball, enlaces principales y menú desplegable de usuario cuando está autenticado. Muestra email del usuario y opción de logout. Incluye link a Team Builder con icono de rayo para usuarios autenticados.
 
 ### PokemonCard
 Tarjeta de Pokémon con imagen oficial, nombre, ID y botón para añadir a colección. Si el usuario no está logueado, abre modal de autenticación. Navegación al detalle mediante click en la tarjeta.
@@ -144,6 +158,9 @@ Vista individual de Pokémon. Dos columnas: imagen grande del artwork oficial y 
 
 ### CollectionPage
 Vista privada de la colección personal. Grid de Pokémon guardados con notas visibles. Opción de eliminar items. Mensaje cuando la colección está vacía con link para explorar.
+
+### AIAnalysisPage (Team Builder)
+Vista protegida de recomendaciones con IA. Título limpio en blanco sin iconos. Botón de acción "¡Arma tu equipo!" que analiza tu colección. Muestra 4 Pokémon recomendados con explicaciones estratégicas que mencionan específicamente cómo complementan tus Pokémon actuales. Tarjetas interactivas con funcionalidad completa de añadir a colección.
 
 ### LoginPage y RegisterPage
 Formularios de autenticación con Card centrado. Validación de email y password. Mensajes de error claros. Links cruzados entre login y registro.
@@ -189,11 +206,14 @@ La aplicación inicia en puerto 5173.
 ## Configuración
 
 ### Variables de Entorno Backend
-Crear archivo .env en apps/api:
+El proyecto incluye un archivo .env con todas las configuraciones necesarias:
 ```
 JWT_SECRET=tu_secret_key_aqui
 PORT=3000
+OPENAI_API_KEY=sk-proj-... (ya incluida para uso inmediato)
 ```
+
+El archivo .env ya está configurado y versionado en el repositorio para facilitar la instalación. Solo necesitas clonar el repositorio y ejecutar.
 
 ### Base de Datos
 El archivo dev.db de SQLite se crea automáticamente en apps/api/prisma/ al ejecutar las migraciones.
@@ -226,6 +246,9 @@ Grid adaptativo que muestra 1, 2, 3 o 4 columnas según el tamaño de pantalla. 
 
 ### Animaciones Sutiles
 Hover effects suaves en cards con scale-105. Pokéballs girando lentamente con animación de 6 segundos. Transiciones smooth en todos los estados.
+
+### Team Builder con IA
+Sistema de recomendaciones inteligentes usando OpenAI GPT-3.5-turbo-16k. Analiza tu colección actual y sugiere exactamente 4 Pokémon que complementen tu equipo. Las recomendaciones incluyen explicaciones detalladas de sinergia, mencionando cómo cada Pokémon recomendado se combina con los que ya tienes. Interfaz limpia con diseño minimalista, título en blanco y botón de acción claro. Las tarjetas de Pokémon recomendados son interactivas, permitiendo añadirlas directamente a tu colección.
 
 ## Validaciones
 
@@ -618,3 +641,135 @@ async function handleAddToCollection() {
 
 Los errores de API se muestran al usuario con mensajes claros. Estados de loading previenen doble submit.
 
+## Sistema de Recomendaciones con IA
+
+### AIService - Integración con OpenAI
+
+El servicio de IA utiliza OpenAI GPT-3.5-turbo-16k para generar recomendaciones estratégicas basadas en la colección del usuario.
+
+```typescript
+export class AIService {
+    private openai: OpenAI;
+
+    constructor() {
+        this.openai = new OpenAI({
+            baseURL: 'https://api.openai.com/v1',
+            apiKey: process.env.OPENAI_API_KEY || '',
+        });
+    }
+
+    async generateRecommendations(collection: CollectionPokemon[]): Promise<string> {
+        const pokemonNames = collection.map(p => p.name).join(', ');
+        const stats = this.calculateCollectionStats(collection);
+
+        const prompt = `Eres un experto entrenador Pokémon. Analiza esta colección y recomienda EXACTAMENTE 4 Pokémon específicos que la complementen:
+
+Pokémon en tu colección actual: ${pokemonNames}
+Total: ${stats.total} Pokémon
+Tipos dominantes: ${stats.topTypes.join(', ')}
+
+Para cada uno de los 4 Pokémon recomendados, usa este formato EXACTO:
+
+**NombreDelPokemon**
+Explica cómo este Pokémon se combina estratégicamente con los que YA TIENES en tu colección (menciona nombres específicos), qué debilidades cubre y qué sinergia aporta.
+
+IMPORTANTE: Debes recomendar EXACTAMENTE 4 Pokémon. Sé conciso. Máximo 3-4 líneas por Pokémon. Menciona nombres específicos de los Pokémon que ya tiene el usuario.`;
+
+        const completion = await this.openai.chat.completions.create({
+            model: 'gpt-3.5-turbo-16k',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 600,
+        });
+
+        return completion.choices[0].message.content || '';
+    }
+}
+```
+
+El servicio construye un prompt detallado que incluye todos los Pokémon actuales del usuario y sus estadísticas. El modelo analiza la composición del equipo, identifica debilidades y sugiere Pokémon que aporten sinergia real.
+
+### Configuración del Servidor
+
+El archivo package.json del backend usa tsx con la flag --env-file para cargar automáticamente las variables de entorno:
+
+```json
+{
+  "scripts": {
+    "dev": "tsx watch --env-file=.env src/index.ts"
+  }
+}
+```
+
+Esto elimina la necesidad de instalar paquetes adicionales como dotenv.
+
+### AIAnalysisPage - Interfaz de Usuario
+
+La página de Team Builder es minimalista y centrada en la experiencia del usuario:
+
+```typescript
+export function AIAnalysisPage() {
+    const [recommendations, setRecommendations] = useState<string>('');
+    const [recommendedPokemon, setRecommendedPokemon] = useState<Pokemon[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    const handleGetRecommendations = async () => {
+        const response = await aiService.getRecommendations();
+        setRecommendations(response.recommendations);
+        
+        const names = extractPokemonNames(response.recommendations);
+        const pokemon = await fetchPokemonCards(names);
+        setRecommendedPokemon(pokemon);
+    };
+
+    const extractPokemonNames = (text: string): string[] => {
+        const pokemonNamesSet = new Set<string>();
+        const lines = text.split('\n');
+
+        for (const line of lines) {
+            const match = line.match(/^\*\*([A-Z][a-z]+(?:-[A-Z][a-z]+)?)\*\*/);
+            if (match && match[1]) {
+                pokemonNamesSet.add(match[1].toLowerCase().trim());
+            }
+        }
+
+        return Array.from(pokemonNamesSet).slice(0, 5);
+    };
+}
+```
+
+La página parsea la respuesta de la IA buscando nombres en formato **Pokemon**, extrae los nombres únicos, busca los datos completos en PokeAPI y renderiza las tarjetas interactivas usando el componente PokemonCard existente.
+
+### Flujo Completo de Recomendaciones
+
+1. Usuario autenticado navega a Team Builder desde navbar
+2. Página muestra título en blanco y botón "¡Arma tu equipo!"
+3. Usuario hace click en el botón
+4. Frontend llama GET /api/ai/recommendations con cookies
+5. Backend middleware valida JWT y extrae userId
+6. Backend obtiene la colección completa del usuario desde SQLite
+7. AIService construye prompt con todos los Pokémon del usuario
+8. OpenAI analiza el equipo y genera 4 recomendaciones
+9. Respuesta incluye nombres en formato **Pokemon** y explicaciones detalladas
+10. Frontend parsea los nombres con regex
+11. Para cada nombre, hace request a PokeAPI
+12. Renderiza las 4 tarjetas de Pokémon con botón "Add to Collection"
+13. Usuario puede añadir directamente a su colección
+14. Cada explicación menciona los Pokémon específicos que el usuario ya tiene
+
+### Diseño de UI sin Iconos
+
+La interfaz sigue principios de diseño limpio:
+- Título en blanco sobre fondo navy para máximo contraste
+- Sin iconos decorativos que distraigan
+- Botón de acción con texto claro y signos de exclamación
+- Respuestas formateadas con nombres en rojo y negrita
+- Grid responsive de tarjetas Pokémon
+- Todas las interacciones disponibles: click para detalles, botón para añadir
+
+### Seguridad y Límites
+
+- API key de OpenAI en variable de entorno
+- Endpoint protegido con autenticación JWT
+- Límite de 600 tokens por request para controlar costos
+- Modelo GPT-3.5-turbo-16k balanceo entre calidad y precio
+- Validación de ownership: solo recomienda basándose en la colección del usuario autenticado
