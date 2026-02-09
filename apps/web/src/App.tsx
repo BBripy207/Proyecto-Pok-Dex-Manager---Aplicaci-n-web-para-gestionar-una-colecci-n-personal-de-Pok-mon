@@ -7,6 +7,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { PokemonListPage } from './pages/PokemonListPage';
 import { PokemonDetailPage } from './pages/PokemonDetailPage';
 import { CollectionPage } from './pages/CollectionPage';
+import { AIAnalysisPage } from './pages/AIAnalysisPage';
 
 export function App() {
   return (
@@ -23,6 +24,14 @@ export function App() {
               element={
                 <ProtectedRoute>
                   <CollectionPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ai-analysis"
+              element={
+                <ProtectedRoute>
+                  <AIAnalysisPage />
                 </ProtectedRoute>
               }
             />

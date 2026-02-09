@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import OpenAI from 'openai';
 
 export interface Pokemon {
     id: number;
@@ -21,38 +21,44 @@ export interface CollectionPokemon extends Pokemon {
 }
 
 export class AIService {
-    private ai: GoogleGenAI;
+    private openai: OpenAI;
 
     constructor() {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            throw new Error('GEMINI_API_KEY not configured');
-        }
-        this.ai = new GoogleGenAI({ apiKey });
+        this.openai = new OpenAI({
+            baseURL: 'https://api.openai.com/v1',
+            apiKey: process.env.OPENAI_API_KEY || '',
+        });
     }
 
     async generateRecommendations(collection: CollectionPokemon[]): Promise<string> {
         const summary = this.summarizeCollection(collection);
         const stats = this.calculateCollectionStats(collection);
 
-        const prompt = `Eres un experto en Pokémon. Analiza esta colección y genera recomendaciones de qué Pokémon añadir:
+        // Lista de nombres de Pokémon en la colección
+        const pokemonNames = collection.map(p => p.name).join(', ');
 
-Colección actual:
-${summary}
+        const prompt = `Eres un experto entrenador Pokémon. Analiza esta colección y recomienda EXACTAMENTE 4 Pokémon específicos que la complementen:
 
-Estadísticas:
-- Total de Pokémon: ${stats.total}
-- Tipos más comunes: ${stats.topTypes.join(', ')}
-- Estadística promedio más alta: ${stats.highestAvgStat}
+Pokémon en tu colección actual: ${pokemonNames}
+Total: ${stats.total} Pokémon
+Tipos dominantes: ${stats.topTypes.join(', ')}
 
-Genera 5 recomendaciones específicas de Pokémon que complementen bien esta colección, explicando por qué cada uno sería una buena adición. Considera balance de tipos y estadísticas.`;
+Para cada uno de los 4 Pokémon recomendados, usa este formato EXACTO (sin números):
 
-        const response = await this.ai.models.generateContent({
-            model: 'gemini-1.5-flash',
-            contents: prompt
+**NombreDelPokemon**
+Explica cómo este Pokémon se combina estratégicamente con los que YA TIENES en tu colección (menciona nombres específicos de tu equipo actual), qué debilidades cubre y qué sinergia aporta al conjunto.
+
+(Línea en blanco entre cada Pokémon)
+
+IMPORTANTE: Debes recomendar EXACTAMENTE 4 Pokémon. Sé conciso y directo. Máximo 3-4 líneas por Pokémon. Menciona nombres específicos de los Pokémon que ya tiene el usuario.`;
+
+        const completion = await this.openai.chat.completions.create({
+            model: 'gpt-3.5-turbo-16k',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 600,
         });
 
-        return response.text || '';
+        return completion.choices[0].message.content || '';
     }
 
     async analyzeCollection(collection: CollectionPokemon[]): Promise<string> {
@@ -76,12 +82,13 @@ Proporciona:
 3. Sinergias entre Pokémon
 4. Sugerencias estratégicas`;
 
-        const response = await this.ai.models.generateContent({
-            model: 'gemini-1.5-flash',
-            contents: prompt
+        const completion = await this.openai.chat.completions.create({
+            model: 'gpt-3.5-turbo-16k',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 500,
         });
 
-        return response.text || '';
+        return completion.choices[0].message.content || '';
     }
 
     async comparePokemon(pokemonList: Pokemon[]): Promise<string> {
@@ -106,12 +113,13 @@ Proporciona:
 3. Roles recomendados para cada uno
 4. Cuál elegir según diferentes situaciones`;
 
-        const response = await this.ai.models.generateContent({
-            model: 'gemini-1.5-flash',
-            contents: prompt
+        const completion = await this.openai.chat.completions.create({
+            model: 'gpt-3.5-turbo-16k',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 500,
         });
 
-        return response.text || '';
+        return completion.choices[0].message.content || '';
     }
 
     async generatePokemonFacts(pokemon: Pokemon): Promise<string> {
@@ -127,12 +135,13 @@ Proporciona:
 2. Una descripción creativa de su estilo de batalla
 3. Dato curioso sobre su diseño o inspiración`;
 
-        const response = await this.ai.models.generateContent({
-            model: 'gemini-1.5-flash',
-            contents: prompt
+        const completion = await this.openai.chat.completions.create({
+            model: 'gpt-3.5-turbo-16k',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 500,
         });
 
-        return response.text || '';
+        return completion.choices[0].message.content || '';
     }
 
     private summarizeCollection(collection: CollectionPokemon[]): string {

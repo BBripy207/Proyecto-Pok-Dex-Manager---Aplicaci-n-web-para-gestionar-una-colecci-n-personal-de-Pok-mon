@@ -33,3 +33,9 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+apps/api/prisma/dev.db

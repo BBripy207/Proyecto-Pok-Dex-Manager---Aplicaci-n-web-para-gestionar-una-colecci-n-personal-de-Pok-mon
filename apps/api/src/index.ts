@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';
 import collectionRoutes from './routes/collection';
 import userRoutes from './routes/user';
+import aiRoutes from './routes/ai';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,7 +16,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
+
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
   } else {
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/collection', collectionRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
