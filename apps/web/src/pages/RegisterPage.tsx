@@ -22,7 +22,7 @@ export function RegisterPage() {
 
         try {
             await register(email, password);
-            navigate('/pokemon');
+            navigate('/');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Registration failed');
         } finally {
