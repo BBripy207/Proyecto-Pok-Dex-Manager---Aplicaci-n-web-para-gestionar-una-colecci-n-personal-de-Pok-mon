@@ -86,7 +86,7 @@ export function PokemonCard({ id, name, imageUrl, isInCollection = false, onAdde
                             {name}
                         </h3>
                     </div>
-                    
+
                     <Button
                         onClick={handleAddToCollection}
                         disabled={adding || isInCollection}
@@ -99,8 +99,8 @@ export function PokemonCard({ id, name, imageUrl, isInCollection = false, onAdde
             </div>
 
             {showAuthModal && (
-                <div 
-                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
                     onClick={() => setShowAuthModal(false)}
                 >
                     <div onClick={(e) => e.stopPropagation()}>

@@ -72,7 +72,7 @@ export function PokemonListPage() {
         return parseInt(parts[parts.length - 2]);
     }
 
-    const filteredPokemon = pokemon.filter(p => 
+    const filteredPokemon = pokemon.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -91,7 +91,7 @@ export function PokemonListPage() {
                     {message}
                 </div>
             )}
-            
+
             <div className="text-center py-6 mb-4">
                 <div className="flex items-center justify-center gap-4 mb-4">
                     <img src={pokeball} alt="Pokeball" className="w-16 h-16 animate-spin-slow" />
@@ -100,7 +100,7 @@ export function PokemonListPage() {
                     </h1>
                     <img src={pokeball} alt="Pokeball" className="w-16 h-16 animate-spin-slow" />
                 </div>
-                
+
                 <div className="max-w-lg mx-auto mt-4">
                     <input
                         type="text"
